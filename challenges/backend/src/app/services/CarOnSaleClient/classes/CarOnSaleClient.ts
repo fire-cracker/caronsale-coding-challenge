@@ -10,7 +10,7 @@ import config from '../../../helpers/config'
 
 @injectable()
 export class CarOnSaleClient implements ICarOnSaleClient {
-  constructor(
+  public constructor(
     @inject(DependencyIdentifier.LOGGER) private logger: ILogger,
     @inject(DependencyIdentifier.AUTHENTICATION) private authentication: IAuthentication
   ) {

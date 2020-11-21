@@ -10,7 +10,9 @@ import config from '../../../helpers/config'
 import { userMock, auctionsMock } from '../../../helpers/mocks'
 
 describe('retrieve the list of running auctions', () => {
-  let stubLoggerInstance, stubAuthenticationInstance, stubAxios
+  let stubLoggerInstance
+  let stubAuthenticationInstance
+  let stubAxios
 
   beforeEach(() => {
     stubLoggerInstance = createStubInstance(Logger)

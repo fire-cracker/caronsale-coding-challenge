@@ -1,34 +1,50 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 import { expect } from 'chai'
-import { createStubInstance } from 'sinon'
+import axios from 'axios'
+import { createStubInstance, stub } from 'sinon'
 
 import { CarOnSaleClient } from './CarOnSaleClient'
 import { Authentication } from '../../Authentication/classes/Authentication'
 import { Logger } from '../../Logger/classes/Logger'
+import config from '../../../helpers/config'
+import { userMock, auctionsMock } from '../../../helpers/mocks'
 
 describe('retrieve the list of running auctions', () => {
-  let stubLoggerInstance, stubAuthenticationInstance
+  let stubLoggerInstance, stubAuthenticationInstance, stubAxios
 
   beforeEach(() => {
     stubLoggerInstance = createStubInstance(Logger)
     stubAuthenticationInstance = createStubInstance(Authentication)
-    stubAuthenticationInstance.authenticate = () => {
-      return(
-        Promise.resolve({
-          token:'token',
-          authenticated: true,
-          userId: 'peace@gmail.com',
-          internalUserId: 1,
-          internalUserUUID: 'ce5e3d7f-3a3d-4fde-96bc-9',
-          type: 1,
-          privileges: '{PUBLIC_USER}~{SALESMAN_USER}'
+    stubAuthenticationInstance.authenticate = () => Promise.resolve(userMock)
+    stubAxios = stub(axios, 'get')
+    stubAxios.callsFake((url, _args) => {
+      if (url === `${config.baseUrl}/v2/auction/buyer/`) {
+        return Promise.resolve({
+          data: auctionsMock
         })
-      )
-    }
-    console.log('test>>>>', stubAuthenticationInstance)
+      }
+      return Promise.resolve()
+    })
   })
 
-  it('should return a list of running auctions if user is authrorised', async() => {
-    const user = await new CarOnSaleClient(stubAuthenticationInstance).getRunningAuctions()
+  afterEach(() => {
+    stubAxios.restore()
+  })
+
+  it('should return a list of running auctions if user is authrorised', async () => {
+    const auctions = await new CarOnSaleClient(
+      stubLoggerInstance,
+      stubAuthenticationInstance
+    ).getRunningAuctions()
+    expect(auctions)
+      .to.be.an.instanceOf(Object)
+      .and.that.includes.all.keys('auctions', 'numOfAuctions')
+      .and.to.have.property('auctions')
+      .and.to.be.an.instanceOf(Array)
+      .and.to.have.deep.property('0')
+      .and.that.includes.all.keys('numBids', 'percentageOfAuctionProgress')
+      .and.to.have.property('numBids')
+      .and.to.equal(0)
+      expect(auctions.numOfAuctions).to.equal(2)
   })
 })

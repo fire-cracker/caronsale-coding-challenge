@@ -3,11 +3,11 @@
  */
 export interface IAuthentication {
 
-  authenticate(): Promise<any /* TODO: Introduce a type */>
+  authenticate(): Promise<IUser>
 
 }
 
-export interface IAuthenticationResponse {
+export interface IUser {
   token: string;
   authenticated: boolean;
   userId: string;

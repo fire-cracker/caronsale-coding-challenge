@@ -2,6 +2,7 @@ import {inject, injectable} from "inversify";
 import {ILogger} from "./services/Logger/interface/ILogger";
 import {ICarOnSaleClient} from "./services/CarOnSaleClient/interface/ICarOnSaleClient";
 import {ICarOnSaleClientService} from "./services/CarOnSaleClient/interface/ICarOnSaleClientService";
+import { IAuctions, IAggregate } from './types/IAuctions'
 import {DependencyIdentifier} from "./DependencyIdentifiers";
 import "reflect-metadata";
 
@@ -17,11 +18,14 @@ export class AuctionMonitorApp {
     public async start(): Promise<void> {
         try {
             this.logger.log(`Auction Monitor started.`);
-            const runningAuctions = await this.carOnSaleClient.getRunningAuctions()
-            const aggregate = await this.carOnSaleClientService.getAggregate(runningAuctions)
+            const runningAuctions: IAuctions = await this.carOnSaleClient.getRunningAuctions()
+            const aggregate:IAggregate = this.carOnSaleClientService.getAggregate(runningAuctions)
 
-            console.log('aggregate>>>>', aggregate)
-            this.logger.log(`${runningAuctions}`);
+            this.logger.log(`
+            TOTAL NUMBER OF AUCTIONS: ${runningAuctions.total}
+            AVERAGE NUMBER OF BIDS: ${aggregate.avgNumOfBids}
+            AVERAGE PERCENTAGE OF AUCTION PROGRESS: ${aggregate.avgPercentOfAuctionProgress}
+        `)
             this.logger.log('Auction Monitor ran successfully!');
             process.exit(0)
         }catch(error) {

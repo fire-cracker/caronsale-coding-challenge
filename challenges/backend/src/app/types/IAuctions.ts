@@ -14,6 +14,6 @@ export interface IAuctions {
 }
 
 export interface IAggregate {
-  avgBids: number
-  avgPercentProgress: number
+  avgNumOfBids: number
+  avgPercentOfAuctionProgress: number
 }

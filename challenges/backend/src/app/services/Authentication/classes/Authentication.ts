@@ -11,10 +11,11 @@ import { userInput, baseUrl } from '../../../fixtures'
 @injectable()
 export class Authentication implements IAuthentication {
 
-  public constructor() {}
+  public constructor(@inject(DependencyIdentifier.LOGGER) private logger: ILogger) {}
 
   public async authenticate(): Promise<IUser> {
     try {
+      this.logger.log(`Authenticating User...`);
       const { userMailId, password, passwordHashCycles } = userInput
       const authUrl: string = `${baseUrl}/v1/authentication`
       const hashedPassword = this.hashPasswordWithCycles(password, passwordHashCycles)
@@ -24,6 +25,7 @@ export class Authentication implements IAuthentication {
 
       return data
     } catch (error) {
+      this.logger.log(`User Authentication fails`);
       throw error
     }
   }

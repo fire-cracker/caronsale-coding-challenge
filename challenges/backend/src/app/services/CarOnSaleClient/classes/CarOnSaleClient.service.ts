@@ -12,20 +12,21 @@ export class CarOnSaleClientService implements ICarOnSaleClientService {
   ) {}
 
   public getAggregate(auctions: any): IAggregate {
+    this.logger.log(`Fetching Auction Aggregates.`);
     const { cummulativeBids,  cummulativePercentProgress } = auctions.items.reduce(
-      (prev: IAuction, curr: IAuction) => {
+      (acc: IAuction, curr: IAuction) => {
         const { numBids, currentHighestBidValue, minimumRequiredAsk } = curr
-        prev.cummulativeBids += numBids
-        prev.cummulativePercentProgress += currentHighestBidValue / minimumRequiredAsk
+        acc.cummulativeBids += numBids
+        acc.cummulativePercentProgress += currentHighestBidValue / minimumRequiredAsk
         return {
-          ...prev
+          ...acc
         }
       },
       { cummulativeBids: 0, cummulativePercentProgress: 0 }
     )
     return {
-      avgBids: (cummulativeBids / auctions.total),
-      avgPercentProgress: (cummulativePercentProgress / auctions.total)
+      avgNumOfBids: (cummulativeBids / auctions.total),
+      avgPercentOfAuctionProgress: (cummulativePercentProgress / auctions.total)
     }
   }
 }

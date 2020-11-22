@@ -6,8 +6,9 @@ import { createStubInstance, stub } from 'sinon'
 import { CarOnSaleClient } from './CarOnSaleClient'
 import { Authentication } from '../../Authentication/classes/Authentication'
 import { Logger } from '../../Logger/classes/Logger'
-import config from '../../../helpers/config'
-import { userMock, auctionsMock } from '../../../helpers/mocks'
+import { baseUrl } from '../../../fixtures'
+import { userMock } from '../../../_mocks_/users.mocks'
+import { auctionsMock } from '../../../_mocks_/auctions.mocks'
 
 describe('retrieve the list of running auctions', () => {
   let stubLoggerInstance
@@ -20,7 +21,7 @@ describe('retrieve the list of running auctions', () => {
     stubAuthenticationInstance.authenticate = () => Promise.resolve(userMock)
     stubAxios = stub(axios, 'get')
     stubAxios.callsFake((url, _args) => {
-      if (url === `${config.baseUrl}/v2/auction/buyer/`) {
+      if (url === `${baseUrl}/v2/auction/buyer/`) {
         return Promise.resolve({
           data: auctionsMock
         })
@@ -40,13 +41,13 @@ describe('retrieve the list of running auctions', () => {
     ).getRunningAuctions()
     expect(auctions)
       .to.be.an.instanceOf(Object)
-      .and.that.includes.all.keys('auctions', 'numOfAuctions')
-      .and.to.have.property('auctions')
+      .and.that.includes.all.keys('items', 'page', 'total')
+      .and.to.have.property('items')
       .and.to.be.an.instanceOf(Array)
       .and.to.have.deep.property('0')
-      .and.that.includes.all.keys('numBids', 'percentageOfAuctionProgress')
+      .and.that.includes.all.keys('numBids', 'minimumRequiredAsk', 'currentHighestBidValue')
       .and.to.have.property('numBids')
       .and.to.equal(0)
-      expect(auctions.numOfAuctions).to.equal(2)
+      expect(auctions.total).to.equal(2)
   })
 })

@@ -1,9 +1,11 @@
 import {Container} from "inversify";
 import {ILogger} from "./services/Logger/interface/ILogger";
 import {ICarOnSaleClient} from "./services/CarOnSaleClient/interface/ICarOnSaleClient";
+import {ICarOnSaleClientService} from "./services/CarOnSaleClient/interface/ICarOnSaleClientService";
 import {IAuthentication} from "./services/Authentication/interface/IAuthentication";
 import {Logger} from "./services/Logger/classes/Logger";
 import {CarOnSaleClient} from "./services/CarOnSaleClient/classes/CarOnSaleClient";
+import {CarOnSaleClientService} from "./services/CarOnSaleClient/classes/CarOnSaleClient.service";
 import {Authentication} from "./services/Authentication/classes/Authentication";
 import {AuctionMonitorApp} from "./AuctionMonitorApp";
 import {DependencyIdentifier} from "./DependencyIdentifiers";
@@ -20,6 +22,7 @@ const container = new Container({
  */
 container.bind<ILogger>(DependencyIdentifier.LOGGER).to(Logger);
 container.bind<ICarOnSaleClient>(DependencyIdentifier.CARONSALECLIENT).to(CarOnSaleClient);
+container.bind<ICarOnSaleClientService>(DependencyIdentifier.CARONSALECLIENTSERVICE).to(CarOnSaleClientService);
 container.bind<IAuthentication>(DependencyIdentifier.AUTHENTICATION).to(Authentication);
 
 
@@ -32,10 +35,5 @@ const app = container.resolve(AuctionMonitorApp);
  * Start the application
  */
 (async () => {
-    try{
-        await app.start();
-        process.exit(0)
-    }catch(error) {
-        process.exit(-1)
-    }
+    await app.start();
 })();

@@ -3,27 +3,19 @@ import { sha512 } from 'js-sha512'
 import axios from 'axios'
 
 import { DependencyIdentifier } from '../../../DependencyIdentifiers'
-import { IAuthentication, IUser } from '../interface/IAuthentication'
+import { IAuthentication } from '../interface/IAuthentication'
+import { IUser } from '../../../types/IUsers'
 import { ILogger } from '../../Logger/interface/ILogger'
-import { IConfig } from '../../../helpers/types'
-import config from '../../../helpers/config'
+import { userInput, baseUrl } from '../../../fixtures'
 
 @injectable()
 export class Authentication implements IAuthentication {
 
-  public constructor() {
-    const { baseUrl, userMailId, password, passwordHashCycles } = config
-    Object.assign(this, { baseUrl, userMailId, password, passwordHashCycles })
-  }
-
-  private baseUrl: IConfig['baseUrl']
-  private userMailId: IConfig['userMailId']
-  private password: IConfig['password']
-  private passwordHashCycles: IConfig['passwordHashCycles']
+  public constructor() {}
 
   public async authenticate(): Promise<IUser> {
     try {
-      const { baseUrl, userMailId, password, passwordHashCycles } = this
+      const { userMailId, password, passwordHashCycles } = userInput
       const authUrl: string = `${baseUrl}/v1/authentication`
       const hashedPassword = this.hashPasswordWithCycles(password, passwordHashCycles)
       const { data } = await axios.put(`${authUrl}/${userMailId}`, {

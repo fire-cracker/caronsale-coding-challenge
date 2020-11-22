@@ -23,13 +23,14 @@ export class AuctionMonitorApp {
 
             this.logger.log(`
             TOTAL NUMBER OF AUCTIONS: ${runningAuctions.total}
-            AVERAGE NUMBER OF BIDS: ${aggregate.avgNumOfBids}
-            AVERAGE PERCENTAGE OF AUCTION PROGRESS: ${aggregate.avgPercentOfAuctionProgress}
+            AVERAGE NUMBER OF BIDS: ${aggregate.avgNumOfBids || 0}
+            AVERAGE PERCENTAGE OF AUCTION PROGRESS: ${aggregate.avgPercentOfAuctionProgress || 0}
         `)
             this.logger.log('Auction Monitor ran successfully!');
             process.exit(0)
         }catch(error) {
-            this.logger.log(`Auction Monitor fails with ${error}`);
+            if(error.response) { this.logger.log(`${error.response.data.message}`) }
+            else { this.logger.log(`Auction Monitor fails with ${error}`) };
             process.exit(-1)
         }
     }

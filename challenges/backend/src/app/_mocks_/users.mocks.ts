@@ -1,7 +1,7 @@
 import { IUser } from '../types/IUsers'
 
 export const userMock: IUser = {
-  token:'token',
+  token: 'token',
   authenticated: true,
   userId: 'peace@gmail.com',
   internalUserId: 1,

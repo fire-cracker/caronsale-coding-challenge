@@ -7,13 +7,12 @@ import { ILogger } from '../../Logger/interface/ILogger'
 
 @injectable()
 export class CarOnSaleClientService implements ICarOnSaleClientService {
-  public constructor(
-    @inject(DependencyIdentifier.LOGGER) private logger: ILogger,
-  ) {}
+
+  public constructor(@inject(DependencyIdentifier.LOGGER) private logger: ILogger) {}
 
   public getAggregate(auctions: any): IAggregate {
-    this.logger.log(`Fetching Auction Aggregates.`);
-    const { cummulativeBids,  cummulativePercentProgress } = auctions.items.reduce(
+    this.logger.log(`Fetching Auction Aggregates.`)
+    const { cummulativeBids, cummulativePercentProgress } = auctions.items.reduce(
       (acc: IAuction, curr: IAuction) => {
         const { numBids, currentHighestBidValue, minimumRequiredAsk } = curr
         acc.cummulativeBids += numBids
@@ -25,8 +24,8 @@ export class CarOnSaleClientService implements ICarOnSaleClientService {
       { cummulativeBids: 0, cummulativePercentProgress: 0 }
     )
     return {
-      avgNumOfBids: (cummulativeBids / auctions.total),
-      avgPercentOfAuctionProgress: (cummulativePercentProgress / auctions.total)
+      avgNumOfBids: cummulativeBids / auctions.total,
+      avgPercentOfAuctionProgress: cummulativePercentProgress / auctions.total
     }
   }
 }

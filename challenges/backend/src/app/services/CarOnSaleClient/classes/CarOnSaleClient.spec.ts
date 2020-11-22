@@ -34,7 +34,7 @@ describe('retrieve the list of running auctions', () => {
     stubAxios.restore()
   })
 
-  it('should return a list of running auctions if user is authrorised', async () => {
+  it('should return a list of running auctions', async () => {
     const auctions = await new CarOnSaleClient(
       stubLoggerInstance,
       stubAuthenticationInstance
@@ -48,6 +48,21 @@ describe('retrieve the list of running auctions', () => {
       .and.that.includes.all.keys('numBids', 'minimumRequiredAsk', 'currentHighestBidValue')
       .and.to.have.property('numBids')
       .and.to.equal(0)
-      expect(auctions.total).to.equal(2)
+    expect(auctions.total).to.equal(2)
+  })
+
+  it('should throw an error if request fails', async () => {
+    stubAuthenticationInstance.authenticate = () =>
+      Promise.reject({ response: { data: { message: 'Request fails' } } })
+    await new CarOnSaleClient(stubLoggerInstance, stubAuthenticationInstance)
+      .getRunningAuctions()
+      .catch((error) => {
+        expect(error)
+          .to.be.an.instanceOf(Object)
+          .and.to.have.property('response')
+          .and.to.have.deep.property('data')
+          .and.to.have.deep.property('message')
+          .and.to.have.equal('Request fails')
+      })
   })
 })

@@ -8,4 +8,3 @@ export interface IAuthentication {
   authenticate(): Promise<IUser>
 
 }
-

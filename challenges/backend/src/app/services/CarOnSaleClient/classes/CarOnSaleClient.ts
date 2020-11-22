@@ -10,6 +10,7 @@ import { baseUrl } from '../../../fixtures'
 
 @injectable()
 export class CarOnSaleClient implements ICarOnSaleClient {
+
   public constructor(
     @inject(DependencyIdentifier.LOGGER) private logger: ILogger,
     @inject(DependencyIdentifier.AUTHENTICATION) private authentication: IAuthentication
@@ -17,7 +18,7 @@ export class CarOnSaleClient implements ICarOnSaleClient {
 
   public async getRunningAuctions(): Promise<IAuctions> {
     try {
-      this.logger.log(`Fetching Running Auctions...`);
+      this.logger.log(`Fetching Running Auctions...`)
       const { userId, token } = await this.authentication.authenticate()
       const { data } = await axios.get(`${baseUrl}/v2/auction/buyer/`, {
         headers: { userId, authToken: token }
@@ -25,7 +26,7 @@ export class CarOnSaleClient implements ICarOnSaleClient {
 
       return data
     } catch (error) {
-      this.logger.log(`Fetch Running Auctions fails`);
+      this.logger.log(`Fetch Running Auctions fails`)
       throw error
     }
   }

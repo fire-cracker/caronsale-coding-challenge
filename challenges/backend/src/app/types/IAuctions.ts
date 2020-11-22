@@ -2,7 +2,7 @@ export interface IAuction {
   id: number
   currentHighestBidValue: number
   minimumRequiredAsk: number
-  numBids: number,
+  numBids: number
   cummulativeBids?: number
   cummulativePercentProgress?: number
 }
